@@ -22,13 +22,15 @@
   const ctx = canvas.getContext('2d');
   let x = canvas.width / 2;
   let y = canvas.height - 30;
-  let dx = 3;
-  let dy = -3;
+  let dx = 2;
+  let dy = -2;
+  let c = '#0095DD';
+  let cs = 0;
   const ballRadius = 10;
   function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = '#0095DD';
+    ctx.fillStyle = c ;
     ctx.fill();
     ctx.closePath();
   }
@@ -40,11 +42,24 @@
     y += dy;
     if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
       dx = -dx;
+      changeColor();
     }
 
     if(y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
       dy = -dy;
+      changeColor();
     }
+  }
+  function changeColor() {
+    c = getRandomColor();
+    }
+  function getRandomColor() {
+    const letters = '0123456789ABCDEF';
+    let color = '#';
+    for (let i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
   }
 setInterval(draw, 10);
 </script>
