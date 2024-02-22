@@ -20,16 +20,21 @@
 <script>
   const canvas = document.getElementById('game');
   const ctx = canvas.getContext('2d');
-  let x = canvas.width / 2;
-  let y = canvas.height - 30;
+  const ballRadius = 10;
+  let x = canvas.width/2;
+  let y = canvas.height-30;
   let dx = 2;
   let dy = -2;
-  let c = '#0095DD';
-  const ballRadius = 10;
+  const paddleHeight = 10;
+  const paddleWidth = 90;
+  let paddleX = (canvas.width - paddleWidth) / 2;
+  let rightPressed = false;
+  let leftPressed = false;
+
   function drawBall() {
     ctx.beginPath();
-    ctx.arc(x, y, ballRadius, 0, Math.PI * 2);
-    ctx.fillStyle = c ;
+    ctx.arc(x, y, ballRadius, 0, Math.PI*2);
+    ctx.fillStyle = '#0095DD';
     ctx.fill();
     ctx.closePath();
   }
@@ -37,30 +42,51 @@
   function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     drawBall();
+    drawPaddle();
+
+    if(x + dx > canvas.width-ballRadius || x + dx < ballRadius) {
+      dx = -dx;
+    }
+    if(y + dy < ballRadius) {
+      dy = -dy;
+    }
+    if(x + dx > paddleX && x + dx < paddleX + paddleWidth && y + dy > canvas.height - paddleHeight - ballRadius) {
+      dy = -dy;
+    }
     x += dx;
     y += dy;
-    if(x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
-      dx = -dx;
-      changeColor();
+    if (rightPressed && paddleX < canvas.width - paddleWidth) {
+      paddleX += 5;
+    } else if (leftPressed && paddleX > 0) {
+      paddleX -= 5;
     }
+  }
+  function drawPaddle() {
+    ctx.beginPath();
+    ctx.rect(paddleX, canvas.height - paddleHeight, paddleWidth, paddleHeight);
+    ctx.fillStyle = '#0095DD';
+    ctx.fill();
+    ctx.closePath();
+  }
+  document.addEventListener('keydown', keyDownHandler, false);
+  document.addEventListener('keyup', keyUpHandler, false);
 
-    if(y + dy > canvas.height - ballRadius || y + dy < ballRadius) {
-      dy = -dy;
-      changeColor();
+  function keyDownHandler(event) {
+    if (event.keyCode === 39) {
+      rightPressed = true;
+    } else if (event.keyCode === 37) {
+      leftPressed = true;
     }
   }
-  function changeColor() {
-    c = getRandomColor();
+
+  function keyUpHandler(event) {
+    if (event.keyCode === 39) {
+      rightPressed = false;
+    } else if (event.keyCode === 37) {
+      leftPressed = false;
     }
-  function getRandomColor() {
-    const letters = '0123456789ABCDEF';
-    let color = '#';
-    for (let i = 0; i < 6; i++) {
-      color += letters[Math.floor(Math.random() * 16)];
-    }
-    return color;
   }
-setInterval(draw, 10);
+  setInterval(draw, 10);
 </script>
 </body>
 </html>
