@@ -76,9 +76,9 @@
             dy = -dy;
             b.status = 0;
             changeColor()
-            score += 1;
+            score += 2;
             if (score === brickRowCount * brickColumnCount) {
-              alert("YOU WIN, CONGRATULATIONS!");
+              alert("YOU WIN, CONGRATULATIONS!. Score = 20");
               document.location.reload();
             }
           }
@@ -158,7 +158,7 @@
       if (x > paddleX && x < paddleX + paddleWidth) {
         dy = -dy;
       } else {
-        alert('GAME OVER');
+        alert('GAME OVER. Your Score: ' + score);
         clearInterval(interval); 
         document.location.reload();
       }
