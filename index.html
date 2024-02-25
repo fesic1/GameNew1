@@ -50,6 +50,14 @@
 
   document.addEventListener('keydown', keyDownHandler, false);
   document.addEventListener('keyup', keyUpHandler, false);
+  document.addEventListener('mousemove', mouseMoveHandler, false);
+
+  function mouseMoveHandler(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    if(relativeX - 43 > 0 && relativeX + 43 < canvas.width) {
+        paddleX = relativeX - paddleWidth/2;
+    }
+}
 
   function keyDownHandler(event) {
     if (event.keyCode === 39) {
@@ -76,7 +84,7 @@
             dy = -dy;
             b.status = 0;
             changeColor()
-            score += 2;
+            score += 1;
             if (score === brickRowCount * brickColumnCount) {
               alert("YOU WIN, CONGRATULATIONS!. Score = 20");
               document.location.reload();
