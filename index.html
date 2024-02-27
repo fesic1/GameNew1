@@ -23,7 +23,7 @@
   const ballRadius = 10;
   let x = canvas.width / 2;
   let y = canvas.height - 30;
-  let dx = 2;
+  let dx = 4;
   let dy = -2;
   let c = '#0095DD';
   const paddleHeight = 10;
@@ -39,6 +39,7 @@
   const brickOffsetTop = 30;
   const brickOffsetLeft = 30;
   let score = 0;
+  let lives = 2;
 
   const bricks = [];
     for (let c = 0; c < brickColumnCount; c++) {
@@ -86,7 +87,7 @@
             changeColor()
             score += 1;
             if (score === brickRowCount * brickColumnCount) {
-              alert("YOU WIN, CONGRATULATIONS!. Score = 20");
+              alert("YOU WIN, CONGRATULATIONS!. Score: 20");
               document.location.reload();
             }
           }
@@ -99,7 +100,13 @@
     ctx.font = '16px Arial';
     ctx.fillStyle = '#0095DD';
     ctx.fillText('Score: ' + score, 8, 20);
-}
+  }
+
+  function drawLives() {
+    ctx.font = '16px Arial';
+    ctx.fillStyle = '#0095DD';
+    ctx.fillText('Lives: ' + lives, canvas.width - 65, 20);
+  }
 
   function drawBall() {
     ctx.beginPath();
@@ -154,6 +161,7 @@
     drawBall();
     drawPaddle();
     drawScore();
+    drawLives();
     collisionDetection();
 
     if (x + dx > canvas.width - ballRadius || x + dx < ballRadius) {
@@ -166,23 +174,31 @@
       if (x > paddleX && x < paddleX + paddleWidth) {
         dy = -dy;
       } else {
-        alert('GAME OVER. Your Score: ' + score);
-        clearInterval(interval); 
-        document.location.reload();
+        lives--;
+        if (!lives) {
+          alert('GAME OVER. Score: ' + score);
+          document.location.reload();
+        } else {
+          x = canvas.width / 2;
+          y = canvas.height - 30;
+          dx = 2;
+          dy = -2;
+           paddleX = (canvas.width - paddleWidth) / 2;
+        }
       }
-}
+    }
 
     if (rightPressed && paddleX < canvas.width - paddleWidth) {
       paddleX += 7;
     } else if (leftPressed && paddleX > 0) {
       paddleX -= 7;
     }
-
     x += dx;
     y += dy;
+    requestAnimationFrame(draw);
   }
   
-  const interval = setInterval(draw, 10);
+  const interval = draw();
 </script>
 </body>
 </html>
