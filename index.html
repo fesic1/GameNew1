@@ -231,12 +231,67 @@
   */
   class Game {
     constructor(setting) {
-      this.setting = state
+      this.state = setting
+      this.canvas = document.getElementById('game')
+      this.ctx = this.canvas.getContext('2d')
+      this.document.addEventListener('keydown', keyDownHandler, false);
+      this.document.addEventListener('keyup', keyUpHandler, false);
+      this.document.addEventListener('mousemove', mouseMoveHandler, false);
     }
     chengeState(password) {
-      this.setting = state
+      this.state = password;
     } 
+    mainScene() {}
+    lvlOneScene() {
+      const ballRadius = 10;
+      let x = canvas.width / 2;
+      let y = canvas.height - 30;
+      let dx = 4;
+      let dy = -2;
+      let c = '#0095DD';
+      const paddleHeight = 10;
+      const paddleWidth = 90;
+      let paddleX = (canvas.width - paddleWidth) / 2;
+      let rightPressed = false;
+      let leftPressed = false;
+      const brickRowCount = 4;
+      const brickColumnCount = 5;
+      const brickWidth = 75;
+      const brickHeight = 20;
+      const brickPadding = 10;
+      const brickOffsetTop = 30;
+      const brickOffsetLeft = 30;
+      this.score = 0;
+      this.lives = 3;
+      const bricks = [];
+        for (let c = 0; c < brickColumnCount; c++) {
+        bricks[c] = [];
+          for (let r = 0; r < brickRowCount; r++) {
+            bricks[c][r] = {x: 0, y: 0, status:1};
+          }
+        }
+      function mouseMoveHandler(e) {
+        var relativeX = e.clientX - canvas.offsetLeft;
+        if(relativeX - 43 > 0 && relativeX + 43 < canvas.width) {
+          paddleX = relativeX - paddleWidth/2;
+        }
+      }
+    }
+    gameOverScene() {}
+    draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      if(this.state === 'end') {
+        this.gameOverScene();
+      } else if (this.state === 'game') {
+        this.lvlOneScene();
+      } else {
+        this.mainScene();
+      }
+      requestAnimationFrame(draw);
+    }
   }
+  const app = new Game('welcome');
+  app.draw();
 </script>
 </body>
 </html>
