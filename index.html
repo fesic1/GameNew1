@@ -261,6 +261,7 @@
       this.scrinHeight = 240;
       this.scrinWidth = 400;
       this.bricks = [];
+      this.creat = 0;
     }
     chengeState(password) {
       this.state = password;
@@ -295,8 +296,9 @@
               b.status = 0;
               this.changeColor()
               this.score += 1;
+              this.ctx.clearRect(b.x, b.y, this.brickWidth, this.brickHeight);
               if (this.score === this.brickRowCount * this.brickColumnCount) {
-                this.scene = 2; // Refirding
+                this.scene = 2; // refactor
               }
             }
           }
@@ -375,40 +377,43 @@
     }
     mainScene() {}
     lvlOneScene() {
-      for (let c = 0; c < this.brickColumnCount; c++) {
-        this.bricks[c] = [];
-        for (let r = 0; r < this.brickRowCount; r++) {
-          this.bricks[c][r] = {x: 0, y: 0, status:1};
-        }
-      }
-    this.drawBricks();
-    this.drawBall();
-    this.drawPaddle();
-    this.drawScore();
-    this.drawLives();
-    this.collisionDetection();  
-    if (this.x + this.dx > this.canvas.width - this.ballRadius || this.x + this.dx < this.ballRadius) {
-      this.dx = -this.dx;
-      }
-
-      if (this.y + this.dy < this.ballRadius) {
-        this.dy = -this.dy;
-      } else if (this.y + this.dy > this.canvas.height - this.ballRadius) {
-        if (this.x > this.paddleX && this.x < this.paddleX + this.paddleWidth) {
-          this.dy = -this.dy;
-        } else {
-          this.lives--;
-          if (!this.lives) { 
-            this.scene = 1;
-          } else {
-            this.x = this.canvas.width / 2;
-            this.y = this.canvas.height - 30;
-            this.dx = 2;
-            this.dy = -2;
-            this.paddleX = (this.canvas.width - this.paddleWidth) / 2;
+      if (this.creat === 0) {
+        for (let c = 0; c < this.brickColumnCount; c++) {
+          this.bricks[c] = [];
+          for (let r = 0; r < this.brickRowCount; r++) {
+            this.bricks[c][r] = {x: 0, y: 0, status:1};
           }
-        }  
+        }
+      this.creat = 1;
       }
+      this.drawBricks();
+      this.drawBall();
+      this.drawPaddle();
+      this.drawScore();
+      this.drawLives();
+      this.collisionDetection();  
+      if (this.x + this.dx > this.canvas.width - this.ballRadius || this.x + this.dx < this.ballRadius) {
+        this.dx = -this.dx;
+        }
+
+        if (this.y + this.dy < this.ballRadius) {
+          this.dy = -this.dy;
+        } else if (this.y + this.dy > this.canvas.height - this.ballRadius) {
+          if (this.x > this.paddleX && this.x < this.paddleX + this.paddleWidth) {
+            this.dy = -this.dy;
+          } else {
+            this.lives--;
+            if (!this.lives) { 
+              this.scene = 1;
+            } else {
+              this.x = this.canvas.width / 2;
+              this.y = this.canvas.height - 30;
+              this.dx = 2;
+              this.dy = -2;
+              this.paddleX = (this.canvas.width - this.paddleWidth) / 2;
+            }
+          }  
+        }
       this.x += this.dx;
       this.y += this.dy;
     }
