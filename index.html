@@ -278,8 +278,8 @@
         }
     }
     mouseDownHandler(e) {
-      var positionX = e.clientX;
-      var positionY = e.clientY;
+      var positionX = e.clientX - this.canvas.offsetLeft;
+      var positionY = e.clientY - this.canvas.offsetTop;
       if(e.button === 0 && positionX >= this.buttonStartX && positionX <= this.buttonStartX + this.buttonStartW && positionY >= this.buttonStartY && positionY <= this.buttonStartY + this.buttonStartH) {
         this.state = 'game';
       }
@@ -393,7 +393,7 @@
     mainScene() {
       this.drawMenuScrin();
       this.drawButtonStart();
-      this.drawText('24px Arial', '#ffa951', 'Welcome! Do you want to play?', 70, 100)
+      this.drawText('24px Arial', '#ffa951', 'Welcome! Do you want to play?', 70, 100);
     }
     lvlOneScene() {
       if (this.creat === 0) {
