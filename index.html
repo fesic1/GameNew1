@@ -231,12 +231,13 @@
   */
   class Game {
     constructor(setting) {
-      this.state = 'game';
+      this.state = 'lol';
       this.canvas = document.getElementById('game')
       this.ctx = this.canvas.getContext('2d')
       document.addEventListener('keydown', this.keyDownHandler.bind(this), false);
       document.addEventListener('keyup', this.keyUpHandler.bind(this), false);
       document.addEventListener('mousemove', this.mouseMoveHandler.bind(this), false);
+      document.addEventListener('mousedown', this.mouseDownHandler.bind(this), false);
       this.ballRadius = 10;
       this.x = this.canvas.width / 2;
       this.y = this.canvas.height - 30;
@@ -262,6 +263,10 @@
       this.scrinWidth = 400;
       this.bricks = [];
       this.creat = 0;
+      this.buttonStartX = 220;
+      this.buttonStartY = 150;
+      this.buttonStartW = 40;
+      this.buttonStartH = 20;
     }
     chengeState(password) {
       this.state = password;
@@ -272,17 +277,24 @@
           this.paddleX = relativeX - this.paddleWidth/2;
         }
     }
-    keyDownHandler(event) {
-      if (event.keyCode === 39) {
+    mouseDownHandler(e) {
+      var positionX = e.clientX;
+      var positionY = e.clientY;
+      if(e.button === 0 && positionX >= this.buttonStartX && positionX <= this.buttonStartX + this.buttonStartW && positionY >= this.buttonStartY && positionY <= this.buttonStartY + this.buttonStartH) {
+        this.state = 'game';
+      }
+    }
+    keyDownHandler(e) {
+      if (e.keyCode === 39) {
         this.rightPressed = true;
-      } else if (event.keyCode === 37) {
+      } else if (e.keyCode === 37) {
         this.leftPressed = true;
       }
     }
-    keyUpHandler(event) {
-      if (event.keyCode === 39) {
+    keyUpHandler(e) {
+      if (e.keyCode === 39) {
         this.rightPressed = false;
-      } else if (event.keyCode === 37) {
+      } else if (e.keyCode === 37) {
         this.leftPressed = false;
       }
     }
@@ -305,15 +317,10 @@
         }
       }
     }
-    drawScore() {
-      this.ctx.font = '16px Arial';
-      this.ctx.fillStyle = '#0095DD';
-      this.ctx.fillText('Score: ' + this.score, 8, 20);
-    }
-    drawLives() {
-      this.ctx.font = '16px Arial';
-      this.ctx.fillStyle = '#0095DD';
-      this.ctx.fillText('Lives: ' + this.lives, this.canvas.width - 65, 20);
+    drawText(font, style, text, cordX, cordY) {
+      this.ctx.font = font;
+      this.ctx.fillStyle = style;
+      this.ctx.fillText(text, + cordX, + cordY);
     }
     drawDeadScore() {
       this.ctx.font = '16px Arial';
@@ -332,6 +339,14 @@
       this.ctx.fill();
       this.ctx.closePath();
     }
+    drawButtonStart() {
+      this.ctx.beginPath();
+      this.ctx.rect(this.buttonStartX, this.buttonStartY, this.buttonStartW, this.buttonStartH);
+      this.ctx.fillStyle = "#9695DD";
+      this.ctx.fill();
+      this.ctx.closePath();
+
+    }
     drawPaddle() {
       this.ctx.beginPath();
       this.ctx.rect(this.paddleX, this.canvas.height - this.paddleHeight, this.paddleWidth, this.paddleHeight);
@@ -339,7 +354,7 @@
       this.ctx.fill();
       this.ctx.closePath();
     }
-    drawDeadScrin() {
+    drawMenuScrin() {
       this.ctx.beginPath();
       this.ctx.rect(40, 40, this.scrinWidth, this.scrinHeight);
       this.ctx.fillStyle = "#0095DD";
@@ -375,7 +390,11 @@
       }
       return color;
     }
-    mainScene() {}
+    mainScene() {
+      this.drawMenuScrin();
+      this.drawButtonStart();
+      this.drawText('24px Arial', '#ffa951', 'Welcome! Do you want to play?', 70, 100)
+    }
     lvlOneScene() {
       if (this.creat === 0) {
         for (let c = 0; c < this.brickColumnCount; c++) {
@@ -389,8 +408,8 @@
       this.drawBricks();
       this.drawBall();
       this.drawPaddle();
-      this.drawScore();
-      this.drawLives();
+      this.drawText('16px Arial', '#0095DD', 'Score: ' + this.score, 8, 20); //Score
+      this.drawText('16px Arial', '#0095DD', 'Lives: ' + this.lives, this.canvas.width - 65, 20); // lives
       this.collisionDetection();  
       if (this.x + this.dx > this.canvas.width - this.ballRadius || this.x + this.dx < this.ballRadius) {
         this.dx = -this.dx;
@@ -408,7 +427,7 @@
             } else {
               this.x = this.canvas.width / 2;
               this.y = this.canvas.height - 30;
-              this.dx = 2;
+              this.dx = 4;
               this.dy = -2;
               this.paddleX = (this.canvas.width - this.paddleWidth) / 2;
             }
